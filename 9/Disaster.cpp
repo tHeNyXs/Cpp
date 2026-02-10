@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cstring>
 using namespace std;
 
 bool vis[26][26], found;
@@ -33,6 +34,7 @@ void dfs(int start)
         // cout << '\n' << cnt << "\n";
         // cout << "\n----------------------------------\n\n";
         dfs(next);
+        if (found) return;
         ans.pop_back();
         vis[start][next] = vis[next][start] = false;
         // for (auto i : ans)
@@ -57,17 +59,21 @@ int main()
         graph[int(b-'A')].emplace_back(int(a-'A'));
     }
     
-    vector<int> result;
+    int start = -1;
     for (int i = 0; i < 26; ++i)
     {
-        if (!graph[i].empty() && !found)
+        // cout << char(i+'A') << " : " << graph[i].size() << '\n';
+        if (graph[i].size() % 2 == 1)
         {
-            ans.emplace_back(i);
-            // cout << "i = " << i << " found : " << boolalpha << found << "\n\n";
-            dfs(i);
-            ans.pop_back();
+            start = i;
+            break;
         }
+        if (start == -1 && !graph[i].empty())
+            start = i;
     }
+    // cout << start;
+    ans.emplace_back(start);
+    dfs(start);
 
     return 0;
 }
