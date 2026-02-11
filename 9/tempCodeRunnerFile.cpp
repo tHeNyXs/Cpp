@@ -1,1 +1,0 @@
-    if (table[ni][nj+i] || table[ni+i][nj]) return false;

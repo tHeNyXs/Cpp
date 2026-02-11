@@ -5,7 +5,6 @@ using namespace std;
 
 int c, r;
 int cnt[501][501];
-bool vis[501][501];
 
 int main()
 {
@@ -15,34 +14,53 @@ int main()
     {
         cin >> c >> r;
         memset(cnt, 0, sizeof(cnt));
-        memset(vis, false, sizeof(vis));
         int t; cin >> t;
         for (int i = 0, x, y; i < t; ++i)
         {
             cin >> x >> y;
-            vis[x+1][y+1] = true;
+            cnt[x+1][y+1] = 1;
         }
 
         for (int i = 1; i <= c; ++i)
         {
             for (int j = 1; j <= r; ++j)
             {
-                if (vis[i][j] || vis[i-1][j]) cnt[i][j] = max(cnt[i-1][j], cnt[i][j-1]) + 1;
-                else cnt[i][j] = max(cnt[i-1][j], cnt[i][j-1]);
+                cnt[i][j] += cnt[i-1][j] + cnt[i][j-1] - cnt[i-1][j-1];
             }
         }
 
-        for (int i = 1; i <= c; ++i)
+        // for (int i = 1; i <= c; ++i)
+        // {
+        //     for (int j = 1; j <= r; ++j)
+        //     {
+        //         cout << cnt[i][j] << " ";
+        //     }
+        //     cout << '\n';
+        // }
+
+        int start = min(c, r);
+        int result = -1;
+        while (true)
         {
-            for (int j = 1; j <= r; ++j)
+            if (start <= 0) break;
+            for (int i = c; i >= start; --i)
             {
-                cout << cnt[i][j] << " ";
+                for (int j = r; j >= start; --j)
+                {
+                    int bigRec = cnt[i][j] - cnt[i-start][j] - cnt[i][j-start] + cnt[i-start][j-start];
+                    int inRec = cnt[i-1][j-1] - cnt[i-1][j-start+1] - cnt[i-start+1][j-1] + cnt[i-start+1][j-start+1];
+                    // cout << "I : " << i << " J : " << j << " Start : " << start << '\n';
+                    // cout << "Big = " << bigRec << " In = " << inRec << "\n\n";
+                    if (start == 1 || start == 2) result = bigRec;
+                    else result = bigRec - inRec;
+                    if (!result) break;
+                }
+                if (!result) break;
             }
-            cout << '\n';
+            if (!result) break;
+            start--;
         }
-
-        // for (int i = 0; i <     )
-        cout << "Hello" << '\n';
+        cout << start << '\n';
     }
     
     return 0;
