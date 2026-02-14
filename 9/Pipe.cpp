@@ -2,96 +2,124 @@
 #include <vector>
 using namespace std;
 
-#define t table[i][j]
-
-struct Pipe
-{
-    bool up, low, left, right;
-    Pipe()
-    {
-        up = low = left = right = false;
-    }
-};
-
-vector<vector<Pipe>> table;
-int cnt, tempLong;
-int c,r;
+vector<vector<int>> table;
 
 int di[] = {-1, 1, 0, 0};
 int dj[] = {0, 0, -1, 1};
-// up low left right
+string ds[] = {"up", "low", "left", "right"};
+int c, r;
+int len, cnt;
 
-bool out(int i, int j)
-{
+bool out(int i, int j) {
     return i < 0 || i >= c || j < 0 || j >= r;
 }
 
-void dfs(int oi, int oj)
-{
-    for (int i = 0; i < 4; ++i)
-    {
-        int ni = oi+di[i];
-        int nj = oj+dj[i];
-        if (out(ni, nj) || vis[ni][nj] == 0) continue;
-        if (i == 0 && (!table[ni][nj].low || !table[oi][oj].up)) continue;
-        if (i == 1 && (!table[ni][nj].up || !table[oi][oj].low)) continue;
-        if (i == 2 && (!table[ni][nj].right || !table[oi][oj].left)) continue;
-        if (i == 3 && (!table[ni][nj].left || !table[oi][oj].right)) continue;
-        vis[oi][oj]--;
-        for (int j = 0; j < c; ++j)
-        {
-            for (int k = 0; k < r; ++k)
-            {
-                cout << vis[j][k] << " ";
+void dfs(int oi, int oj, string os) {
+    for (int i = 0; i < 4; ++i) {
+        int ni = oi + di[i];
+        int nj = oj + dj[i];
+        string ns = ds[i];
+        if (out(ni, nj) || ns != os || table[ni][nj] <= 0) continue;
+        bool flag, change;
+        flag = change = false;
+        if (ns == "left") {
+            if (table[ni][nj] == 12) ns = "up";
+            else if (table[ni][nj] == 14) ns = "low";
+            else if (table[ni][nj] == 22) ns = "left";
+            else if (table[ni][nj] == 31) {
+                ns = "left";
+                table[ni][nj] = 21;
+                change = true;
             }
-            cout << '\n';
+            else flag = true;
         }
-        cout << "oi : " << oi << " oj : " << oj << '\n' << "ni : " << ni << " nj : " << nj << "\n\n";
-        tempLong++;
-        dfs(ni, nj);
+        else if (ns == "up") {
+            if (table[ni][nj] == 13) ns = "left";
+            else if (table[ni][nj] == 14) ns = "right";
+            else if (table[ni][nj] == 21) ns = "up";
+            else if (table[ni][nj] == 31) {
+                ns = "up";
+                table[ni][nj] = 22;
+                change = true;
+            }
+            else flag = true;
+        }
+        else if (ns == "low") {
+            if (table[ni][nj] == 11) ns = "left";
+            else if (table[ni][nj] == 12) ns = "right";
+            else if (table[ni][nj] == 21) ns = "low";
+            else if (table[ni][nj] == 31) {
+                ns = "low";
+                table[ni][nj] = 22;
+                change = true;
+            }
+            else flag = true;
+        }
+        else if (ns == "right") {
+            if (table[ni][nj] == 11) ns = "up";
+            else if (table[ni][nj] == 13) ns = "low";
+            else if (table[ni][nj] == 22) ns = "right";
+            else if (table[ni][nj] == 31) {
+                ns = "right";
+                table[ni][nj] = 21;
+                change = true;
+            }
+            else flag = true;
+        }
+
+        if (flag) continue;
+        if (!change) table[ni][nj] = 0;
+        len++;
+        dfs(ni, nj, ns);
+        return;
     }
 }
 
-
 int main()
 {
-    // ios_base::sync_with_stdio(false); cin.tie(nullptr);
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
     cin >> c >> r;
-    table.resize(c, vector<Pipe>(r));
-
-    for (int i = 0; i < c; ++i)
-    {
-        for (int j = 0, temp; j < r; ++j)
-        {
-            cin >> temp;
-            if (temp == 11 || temp == 13 || temp == 22 || temp == 31) t.left = true;
-            if (temp == 11 || temp == 12 || temp == 21 || temp == 31) t.up = true;
-            if (temp == 12 || temp == 14 || temp == 22 || temp == 31) t.right = true;
-            if (temp == 13 || temp == 14 || temp == 21 || temp == 31) t.low = true;
-            if (temp == 31) vis[i][j] = 2;
-            else if (temp != 0) vis[i][j] = 1;
-            else vis[i][j] = 0;
+    table.resize(c, vector<int>(r));
+    for (int i = 0; i < c; ++i) {
+        for (int j = 0; j < r; ++j) {
+            cin >> table[i][j];
         }
     }
 
     vector<int> ans;
-    for (int i = 0; i < c; ++i)
-    {
-        for (int j = 0; j < r; ++j)
-        {
-            if (vis[i][j] != 0)
-            {
-                tempLong = 0;
-                // cout << "i : " << i << " j : " << j << "\n";
-                dfs(i, j);
-                ans.emplace_back(tempLong);
-                cnt++;
+    for (int i = 0; i < c; ++i) {
+        for (int j = 0; j < r; ++j) {
+            if (table[i][j] <= 0) continue;
+            cnt++;
+            int temp = table[i][j];
+            if (temp == 31) {
+                table[i][j] = 21;
+                dfs(i, j, "left");
+                dfs(i, j, "right");
+                ans.emplace_back(len);
+                len = 0;
+                continue;
             }
+            table[i][j] = 0;
+            if (temp == 11 || temp == 13 || temp == 22) dfs(i, j, "left");
+            if (temp == 11 || temp == 12 || temp == 21) dfs(i, j, "up");
+            if (temp == 12 || temp == 14 || temp == 22) dfs(i, j, "right");
+            if (temp == 13 || temp == 14 || temp == 21) dfs(i, j, "low");
+            // for (int k = 0; k < c; ++k) {
+            //     for (int l = 0; l < r; ++l) {
+            //         cout << table[k][l] << ' ';
+            //     }
+            //     cout << "\n";
+            // }
+            // cout << "i : " << i << " j : " << j << "\n\n";
+            ans.emplace_back(len);
+            len = 0;
         }
     }
-    
     cout << cnt << '\n';
-    for (int num : ans) cout << num << ' ';
-
+    for (int num : ans) {
+        cout << num+1 << ' ';
+    }
+    
     return 0;
 }
