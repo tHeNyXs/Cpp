@@ -105,13 +105,13 @@ int main()
             if (temp == 11 || temp == 12 || temp == 21) dfs(i, j, "up");
             if (temp == 12 || temp == 14 || temp == 22) dfs(i, j, "right");
             if (temp == 13 || temp == 14 || temp == 21) dfs(i, j, "low");
-            for (int k = 0; k < c; ++k) {
-                for (int l = 0; l < r; ++l) {
-                    cout << table[k][l] << ' ';
-                }
-                cout << "\n";
-            }
-            cout << "i : " << i << " j : " << j << "\n\n";
+            // for (int k = 0; k < c; ++k) {
+            //     for (int l = 0; l < r; ++l) {
+            //         cout << table[k][l] << ' ';
+            //     }
+            //     cout << "\n";
+            // }
+            // cout << "i : " << i << " j : " << j << "\n\n";
             ans.emplace_back(len);
             len = 0;
         }
