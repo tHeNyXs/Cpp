@@ -1,0 +1,1 @@
+cout << sj << " " << sk << " : sum = " << sum << "\t << cnt : " << cnt << "\n\n";
