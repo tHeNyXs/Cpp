@@ -56,12 +56,6 @@ int main() {
             }
         }
     }
-
-    // for (int i = 0; i <= n; ++i) {
-    //     cout << "I : " << i << '\n';
-    
-    //     cout << "\n";
-    // }
     cout << cnt[n][k] % mod;
 
 
