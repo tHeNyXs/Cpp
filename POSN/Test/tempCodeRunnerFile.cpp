@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    cout << "Input Level : "; cin >> n;
+    int len = (n*2)-1;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= len; ++j) cout << " ";
+        cout << " ";
+        for (int j = 1; j <= n-i; ++j) cout << "  ";
+        for (int j = 1; j <= (i*2)-1; ++j) cout << "* ";
+        cout << '\n';
+    }
+    
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n-i; ++j) cout << " ";
+        for (int j = 1; j <= (i*2)-1; ++j) cout << "*";
+        for (int j = 1; j <= n-i; ++j) cout << " ";
+
+        for (int j = 1; j <= len; ++j) cout << " ";
+        if (i != n) cout << " ";
+        else cout << '*';
+        for (int j = 1; j <= len; ++j) cout << " ";
+
+        for (int j = 1; j <= n-i; ++j) cout << " ";
+        for (int j = 1; j <= (i*2)-1; ++j) cout << "*";
+        cout << '\n';
+    }
+
+    for (int i = 1; i < n; ++i) {
+        
+    }
+    
+
+    return 0;
+}

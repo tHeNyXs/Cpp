@@ -1,34 +1,29 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
+#define ll long long
+
+const int N = 1e3 + 5;
+const int mod = 1e9 + 7;
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(nullptr);
     int n; cin >> n;
-    vector<vector<char>> t(n+1, vector<char>(n+1, '\0'));
+    vector<vector<ll>> dp(N, vector<ll>(N, 0));
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= n; ++j) {
-            cin >> t[i][j];
-        }
-    }
-    
-    vector<vector<int>> num(n+1, vector<int>(n+1, 0));
-    if (t[1][1] == '.') num[1][1] = 1;
-    for (int i = 1; i <= n; ++i) {
-        for (int j = 1; j <= n; ++j) {
-            if (t[i][j] == '*' || (i == 1 && j == 1)) continue;
-            num[i][j] = num[i-1][j] + num[i][j-1];
-            // if (t[i-1][j] == '.' && t[i][j-1] == '.') num[i][j]++;
-            if (num[i][j] >= int(1e9) + 7) num[i][j] %= int(1e9) + 7;   
+            char a; cin >> a;
+            if (a == '.') dp[i][j]++;
         }
     }
 
-    // for (int i = 1; i <= n; ++i) {
-    //     for (int j = 1; j <= n; ++j) {
-    //         cout << num[i][j] << " ";
-    //     }
-    //     cout << '\n';
-    // }
-    cout << num[n][n] ;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (i == 1 && j == 1) continue;
+            if (dp[i][j]) dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            dp[i][j] %= mod;
+        }
+    }
+
+    cout << dp[n][n];
 
     return 0;
 }
